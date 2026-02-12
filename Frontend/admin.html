@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Config Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #1a1a1a;
+            --surface2: #222;
+            --border: #333;
+            --text: #fff;
+            --text2: #aaa;
+            --primary: #00ffd5;
+            --primary20: #00ffd520;
+            --danger: #ff4757;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text2);
+            font-size: 0.85rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .config-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .config-item {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .config-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .config-item-details {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .config-item-details span {
+            background: var(--surface2);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #2ecc7133;
+            color: var(--success);
+        }
+
+        .badge-usage {
+            background: #3498db33;
+            color: #3498db;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text2);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .voice-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 8px;
+        }
+
+        .voice-option {
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .voice-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .voice-option.selected {
+            border-color: var(--primary);
+            background: var(--primary20);
+        }
+
+        .voice-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .voice-style {
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .voice-play {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .voice-option:hover .voice-play {
+            opacity: 1;
+        }
+
+        .voice-play.playing {
+            background: var(--danger);
+        }
+
+        select option {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast-success {
+            background: var(--success);
+            color: #000;
+        }
+
+        .toast-error {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎙️ Interview Config Admin Panel</h1>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('list')">📋 All Configs</div>
+            <div class="tab" onclick="showTab('create')">➕ Create New</div>
+            <div class="tab" onclick="showTab('voices')">🎤 Voices</div>
+        </div>
+
+        <!-- List Configs Tab -->
+        <div id="tab-list" class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="margin: 0;">Active Configurations</h2>
+                <button class="btn btn-secondary" onclick="loadConfigs()">🔄 Refresh</button>
+            </div>
+            <div class="config-list" id="configList">
+                <p style="color: #888;">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Create Config Tab -->
+        <div id="tab-create" class="card hidden">
+            <h2>Create New Interview Configuration</h2>
+            <form id="configForm" onsubmit="saveConfig(event)">
+
+                <!-- Interview Info -->
+                <h2>📋 Interview Details</h2>
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Company Name *</label>
+                        <input type="text" id="companyName" required placeholder="e.g., TechCorp">
+                    </div>
+                    <div class="col form-group">
+                        <label>Job Role *</label>
+                        <input type="text" id="jobRole" required value="Software Engineer">
+                    </div>
+                    <div class="col form-group">
+                        <label>Interview Duration (minutes)</label>
+                        <input type="number" id="durationMinutes" value="30" min="1" max="180">
+                    </div>
+                </div>
+
+                <!-- Candidate Info -->
+                <h2>👤 Candidate Info (optional)</h2>
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Candidate Name</label>
+                        <input type="text" id="candidateName" placeholder="John Doe">
+                    </div>
+                    <div class="col form-group">
+                        <label>Candidate Email</label>
+                        <input type="email" id="candidateEmail" placeholder="john@email.com">
+                    </div>
+                </div>
+
+                <!-- New Business Fields -->
+                <h2>🌍 Interview Context</h2>
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Interview Language *</label>
+                        <select id="language">
+                            <option value="indian-english">🇮🇳 Indian English</option>
+                            <option value="casual-hindi">🇮🇳 Casual Hindi (Hinglish)</option>
+                        </select>
+                    </div>
+                    <div class="col form-group">
+                        <label>Country *</label>
+                        <select id="country">
+                            <option value="India">🇮🇳 India</option>
+                            <option value="USA">🇺🇸 USA</option>
+                            <option value="UK">🇬🇧 UK</option>
+                            <option value="Canada">🇨🇦 Canada</option>
+                            <option value="Australia">🇦🇺 Australia</option>
+                            <option value="Germany">🇩🇪 Germany</option>
+                            <option value="Singapore">🇸🇬 Singapore</option>
+                            <option value="UAE">🇦🇪 UAE</option>
+                            <option value="Other">🌐 Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Industry Type *</label>
+                        <select id="industryType">
+                            <option value="Information Technology">💻 Information Technology</option>
+                            <option value="Finance & Banking">🏦 Finance & Banking</option>
+                            <option value="Healthcare">🏥 Healthcare</option>
+                            <option value="E-Commerce">🛒 E-Commerce</option>
+                            <option value="EdTech">📚 EdTech</option>
+                            <option value="Manufacturing">🏭 Manufacturing</option>
+                            <option value="Consulting">📊 Consulting</option>
+                            <option value="Media & Entertainment">🎬 Media & Entertainment</option>
+                            <option value="Telecom">📡 Telecom</option>
+                            <option value="Automotive">🚗 Automotive</option>
+                            <option value="Other">🔧 Other</option>
+                        </select>
+                    </div>
+                    <div class="col form-group">
+                        <label>Years of Experience *</label>
+                        <select id="yearsOfExperience">
+                            <option value="0-1">👶 Fresher (0-1 years)</option>
+                            <option value="1-3" selected>🌱 Junior (1-3 years)</option>
+                            <option value="3-5">💪 Mid-Level (3-5 years)</option>
+                            <option value="5-10">🚀 Senior (5-10 years)</option>
+                            <option value="10+">🎯 Lead/Principal (10+ years)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Voice Selection -->
+                <h2>🎙️ AI Voice</h2>
+                <p style="color: var(--text2); font-size: 13px; margin-bottom: 10px;">
+                    Click a voice to select. Hover and click ▶ to preview the voice.
+                </p>
+                <div class="form-group">
+                    <div class="voice-select" id="voiceSelect"></div>
+                </div>
+                <div class="form-group">
+                    <label>Voice Style Instruction (optional)</label>
+                    <input type="text" id="voiceStyle" placeholder="e.g., Professional and calm, speak clearly">
+                </div>
+
+                <!-- Proctoring -->
+                <h2>🔒 Proctoring Settings</h2>
+                <div class="row">
+                    <div class="col checkbox-group">
+                        <input type="checkbox" id="proctoringEnabled" checked>
+                        <label for="proctoringEnabled">Enable Proctoring</label>
+                    </div>
+                    <div class="col checkbox-group">
+                        <input type="checkbox" id="detectMultiplePeople" checked>
+                        <label for="detectMultiplePeople">Detect Multiple People</label>
+                    </div>
+                    <div class="col checkbox-group">
+                        <input type="checkbox" id="detectPhone" checked>
+                        <label for="detectPhone">Detect Phone</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col checkbox-group">
+                        <input type="checkbox" id="detectLookingAway" checked>
+                        <label for="detectLookingAway">Detect Looking Away</label>
+                    </div>
+                    <div class="col checkbox-group">
+                        <input type="checkbox" id="detectTabSwitch" checked>
+                        <label for="detectTabSwitch">Detect Tab Switch</label>
+                    </div>
+                    <div class="col form-group">
+                        <label>Strictness</label>
+                        <select id="strictness">
+                            <option value="lenient">Lenient</option>
+                            <option value="normal" selected>Normal</option>
+                            <option value="strict">Strict</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Custom Prompt -->
+                <h2>📝 Custom System Prompt (optional)</h2>
+                <div class="form-group">
+                    <label>Leave empty to use auto-generated prompt based on config</label>
+                    <textarea id="systemPrompt" rows="4" placeholder="Custom AI instructions..."></textarea>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">💾 Create Interview Config</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Voices Tab -->
+        <div id="tab-voices" class="card hidden">
+            <h2>Available Gemini Voices</h2>
+            <p style="color: var(--text2); margin-bottom: 15px; font-size: 13px;">
+                Hover over a voice and click ▶ to hear a preview.
+            </p>
+            <div id="voicesList" class="voice-select"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let voices = [];
+        let selectedVoice = 'Aoede';
+        let currentAudio = null;
+
+        // Generate UUID v4
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Tab switching
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+            document.querySelector(`.tab:nth-child(${tab === 'list' ? 1 : tab === 'create' ? 2 : 3})`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+        }
+
+        // Load configs
+        async function loadConfigs() {
+            try {
+                const res = await fetch(`${API_BASE}/api/configs`);
+                const data = await res.json();
+                const list = document.getElementById('configList');
+
+                if (data.configs.length === 0) {
+                    list.innerHTML = '<p style="color: #888;">No configurations found. Create one!</p>';
+                    return;
+                }
+
+                list.innerHTML = data.configs.map(c => `
+                    <div class="config-item">
+                        <div class="config-item-header">
+                            <div>
+                                <strong>${c.companyName || 'Unnamed'}</strong> — ${c.jobRole || 'Software Engineer'}
+                                <span class="badge badge-active">● Active</span>
+                                <span class="badge badge-usage">📊 Used: ${c.usageCount || 0}</span>
+                            </div>
+                            <div class="config-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="duplicateConfig('${c.token}')">📋 Duplicate</button>
+                                <button class="btn btn-secondary btn-sm" onclick="copyLink('${c.token}')">🔗 Copy Link</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteConfig('${c.token}')">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="config-item-details">
+                            <span>🎙️ ${c.voiceName || 'Aoede'}</span>
+                            <span>🌐 ${c.language === 'casual-hindi' ? 'Casual Hindi' : 'Indian English'}</span>
+                            <span>🏢 ${c.industryType || 'IT'}</span>
+                            <span>📅 ${c.yearsOfExperience || '1-3'} yrs</span>
+                            <span>🌍 ${c.country || 'India'}</span>
+                            <span>⏱️ ${c.durationMinutes || 30} min</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                document.getElementById('configList').innerHTML = `<p style="color: var(--danger);">Error loading configs: ${e.message}</p>`;
+            }
+        }
+
+        // Load voices
+        async function loadVoices() {
+            try {
+                const res = await fetch(`${API_BASE}/api/voices`);
+                voices = await res.json();
+
+                const voiceHtml = voices.map(v => `
+                    <div class="voice-option ${v.name === selectedVoice ? 'selected' : ''}" onclick="selectVoice('${v.name}')">
+                        <button class="voice-play" onclick="event.stopPropagation(); previewVoice('${v.name}')" title="Preview voice">▶</button>
+                        <div class="voice-name">${v.name}</div>
+                        <div class="voice-style">${v.style}</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('voiceSelect').innerHTML = voiceHtml;
+                document.getElementById('voicesList').innerHTML = voiceHtml;
+            } catch (e) {
+                console.error('Error loading voices:', e);
+            }
+        }
+
+        function selectVoice(name) {
+            selectedVoice = name;
+            document.querySelectorAll('.voice-option').forEach(v => {
+                v.classList.toggle('selected', v.querySelector('.voice-name').textContent === name);
+            });
+        }
+
+        // Voice preview using Web Speech API
+        function previewVoice(name) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(
+                    `Hi, I'm ${name}. I'll be conducting your interview today. Let's get started.`
+                );
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+
+                // Visual feedback
+                document.querySelectorAll('.voice-play').forEach(btn => btn.classList.remove('playing'));
+                const playingBtn = event.target;
+                playingBtn.classList.add('playing');
+                playingBtn.textContent = '⏹';
+                utterance.onend = () => {
+                    playingBtn.classList.remove('playing');
+                    playingBtn.textContent = '▶';
+                };
+            } else {
+                showToast('Voice preview not supported in this browser', 'error');
+            }
+        }
+
+        // Save config
+        async function saveConfig(e) {
+            e.preventDefault();
+
+            const config = {
+                token: generateUUID(),
+                voiceName: selectedVoice,
+                voiceStyle: document.getElementById('voiceStyle').value || null,
+                companyName: document.getElementById('companyName').value,
+                jobRole: document.getElementById('jobRole').value,
+                candidateName: document.getElementById('candidateName').value || null,
+                candidateEmail: document.getElementById('candidateEmail').value || null,
+                language: document.getElementById('language').value,
+                country: document.getElementById('country').value,
+                industryType: document.getElementById('industryType').value,
+                yearsOfExperience: document.getElementById('yearsOfExperience').value,
+                durationMinutes: parseInt(document.getElementById('durationMinutes').value),
+                systemPrompt: document.getElementById('systemPrompt').value || null,
+                proctoring: {
+                    enabled: document.getElementById('proctoringEnabled').checked,
+                    detectMultiplePeople: document.getElementById('detectMultiplePeople').checked,
+                    detectPhone: document.getElementById('detectPhone').checked,
+                    detectLookingAway: document.getElementById('detectLookingAway').checked,
+                    detectTabSwitch: document.getElementById('detectTabSwitch').checked,
+                    strictness: document.getElementById('strictness').value
+                }
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                if (res.ok) {
+                    const result = await res.json();
+                    showToast(`✅ Config created! Token: ${result.token}`);
+                    copyLink(result.token);
+                    resetForm();
+                    showTab('list');
+                    loadConfigs();
+                } else {
+                    const err = await res.json();
+                    showToast('❌ Error: ' + err.detail, 'error');
+                }
+            } catch (e) {
+                showToast('❌ Error saving config: ' + e.message, 'error');
+            }
+        }
+
+        // Duplicate config
+        async function duplicateConfig(token) {
+            try {
+                const res = await fetch(`${API_BASE}/api/config/${token}/duplicate`, { method: 'POST' });
+                if (res.ok) {
+                    const result = await res.json();
+                    showToast(`📋 Config duplicated! New token: ${result.newToken.substring(0, 8)}...`);
+                    loadConfigs();
+                } else {
+                    showToast('Error duplicating config', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        // Delete config
+        async function deleteConfig(token) {
+            if (!confirm(`Delete this configuration?`)) return;
+
+            try {
+                await fetch(`${API_BASE}/api/config/${token}`, { method: 'DELETE' });
+                showToast('🗑️ Config deleted');
+                loadConfigs();
+            } catch (e) {
+                showToast('Error deleting config: ' + e.message, 'error');
+            }
+        }
+
+        // Copy interview link
+        function copyLink(token) {
+            const link = `${API_BASE}/index.html?token=${token}`;
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('🔗 Interview link copied!');
+            }).catch(() => {
+                // Fallback
+                prompt('Copy this interview link:', link);
+            });
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('configForm').reset();
+            selectedVoice = 'Aoede';
+            loadVoices();
+        }
+
+        // Initialize
+        async function init() {
+            try {
+                await fetch(`${API_BASE}/api/init-db`, { method: 'POST' });
+            } catch (e) {
+                console.log('DB init skipped or failed');
+            }
+
+            loadConfigs();
+            loadVoices();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
